@@ -9,6 +9,6 @@ namespace Hotel.Domain.Interfaces
 {
     public interface ICustomerRepository
     {
-        IReadOnlyList<Customer> GetCustomers();
+        IReadOnlyList<Customer> GetCustomers(string filter);
     }
 }

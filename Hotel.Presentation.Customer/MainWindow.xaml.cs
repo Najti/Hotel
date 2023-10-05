@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Hotel.Domain.Managers;
+using Hotel.Persistence.Repositories;
+using Hotel.Presentation.Customer.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,14 +23,21 @@ namespace Hotel.Presentation.Customer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<CustomerUI> customerUIs=new List<CustomerUI>();
+        private CustomerManager customerManager;
+        private string conn = "Data Source=NB21-6CDPYD3\\SQLEXPRESS;Initial Catalog=HotelDonderdag;Integrated Security=True";
         public MainWindow()
         {
             InitializeComponent();
+            customerManager = new CustomerManager(new CustomerRepository(conn));
+            customerUIs = customerManager.GetCustomers(null).Select(x => new CustomerUI(x.Id,x.Name,x.Contact.Email,x.Contact.Address.ToString(),x.Contact.Phone,x.GetMembers().Count)).ToList();
+            CustomerDataGrid.ItemsSource = customerUIs;
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-
+            customerUIs = customerManager.GetCustomers(SearchTextBox.Text).Select(x => new CustomerUI(x.Id, x.Name, x.Contact.Email, x.Contact.Address.ToString(), x.Contact.Phone, x.GetMembers().Count)).ToList();
+            CustomerDataGrid.ItemsSource = customerUIs;
         }
 
         private void MenuItemAddCustomer_Click(object sender, RoutedEventArgs e)

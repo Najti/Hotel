@@ -14,6 +14,13 @@ namespace Hotel.Domain.Model
         private string _phone;
         private Address _address;
 
+        public ContactInfo(string email, string phone, Address address)
+        {
+            _email = email;
+            _phone = phone;
+            _address = address;
+        }
+
         public string Email { get { return _email; } set { if (string.IsNullOrWhiteSpace(value)) throw new CustomerException("ci"); _email = value; } }
        
         public string Phone {
