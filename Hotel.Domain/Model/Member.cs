@@ -24,14 +24,12 @@ namespace Hotel.Domain.Model
                 _birthday = value;
             }
         }
-
         public override bool Equals(object? obj)
         {
             return obj is Member member &&
                    _name == member._name &&
                    _birthday.Equals(member._birthday);
         }
-
         public override int GetHashCode()
         {
             return HashCode.Combine(_name, _birthday);

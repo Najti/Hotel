@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hotel.Domain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,10 +16,13 @@ namespace Hotel.Domain.Model
             PostalCode = postalCode;
             HouseNumber = houseNumber;
         }
-
-        public string City { get; set; }
-        public string Street { get; set; }
-        public string PostalCode { get; set; }
-        public string HouseNumber { get; set; }
+        private string _city;
+        public string City { get { return _city; } set { if (string.IsNullOrWhiteSpace(value)) throw new CustomerException("Mun is empty"); _city = value; } }
+        private string _postalCode;
+        public string PostalCode { get { return _postalCode; } set { if (string.IsNullOrWhiteSpace(value)) throw new CustomerException("Zip is empty"); _postalCode = value; } }
+        private string _houseNumber;
+        public string HouseNumber { get { return _houseNumber; } set { if (string.IsNullOrWhiteSpace(value)) throw new CustomerException("HN is empty"); _houseNumber = value; } }
+        private string _street;
+        public string Street { get { return _street; } set { if (string.IsNullOrWhiteSpace(value)) throw new CustomerException("Street is empty"); _street = value; } }      
     }
 }
