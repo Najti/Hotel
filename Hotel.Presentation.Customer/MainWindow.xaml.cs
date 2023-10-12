@@ -1,8 +1,11 @@
 ﻿using Hotel.Domain.Managers;
 using Hotel.Persistence.Repositories;
 using Hotel.Presentation.Customer.Model;
+using Hotel.Util;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,26 +26,28 @@ namespace Hotel.Presentation.Customer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<CustomerUI> customerUIs=new List<CustomerUI>();
+        private ObservableCollection<CustomerUI> customerUIs=new ObservableCollection<CustomerUI>();
         private CustomerManager customerManager;
-        private string conn = "Data Source=NB21-6CDPYD3\\SQLEXPRESS;Initial Catalog=HotelDonderdag;Integrated Security=True";
+        //private string conn = "Data Source=NB21-6CDPYD3\\SQLEXPRESS;Initial Catalog=HotelDonderdag;Integrated Security=True";
         public MainWindow()
         {
             InitializeComponent();
-            customerManager = new CustomerManager(new CustomerRepository(conn));
-            customerUIs = customerManager.GetCustomers(null).Select(x => new CustomerUI(x.Id,x.Name,x.Contact.Email,x.Contact.Address.ToString(),x.Contact.Phone,x.GetMembers().Count)).ToList();
+            customerManager = new CustomerManager(RepositoryFactory.CustomerRepository);
+            customerUIs =new ObservableCollection<CustomerUI>(customerManager.GetCustomers(null).Select(x => new CustomerUI(x.Id,x.Name,x.Contact.Email,x.Contact.Address.ToString(),x.Contact.Phone,x.GetMembers().Count)).ToList());
             CustomerDataGrid.ItemsSource = customerUIs;
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            customerUIs = customerManager.GetCustomers(SearchTextBox.Text).Select(x => new CustomerUI(x.Id, x.Name, x.Contact.Email, x.Contact.Address.ToString(), x.Contact.Phone, x.GetMembers().Count)).ToList();
+            customerUIs =new ObservableCollection<CustomerUI>(customerManager.GetCustomers(SearchTextBox.Text).Select(x => new CustomerUI(x.Id, x.Name, x.Contact.Email, x.Contact.Address.ToString(), x.Contact.Phone, x.GetMembers().Count)).ToList());
             CustomerDataGrid.ItemsSource = customerUIs;
         }
 
         private void MenuItemAddCustomer_Click(object sender, RoutedEventArgs e)
         {
-
+            CustomerWindow w = new CustomerWindow();
+            if (w.ShowDialog()==true)
+                customerUIs.Add(w.CustomerUI);
         }
 
         private void MenuItemDeleteCustomer_Click(object sender, RoutedEventArgs e)
