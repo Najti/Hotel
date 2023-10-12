@@ -40,5 +40,9 @@ namespace Hotel.Domain.Model
         {
             return $"{City} [{PostalCode}] - {Street} - {HouseNumber}";
         }
+        public string ToAddressLine()
+        {
+            return $"{City}{splitChar}{PostalCode}{splitChar}{Street}{splitChar}{HouseNumber}";
+        }
     }
 }

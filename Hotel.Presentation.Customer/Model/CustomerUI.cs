@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Hotel.Presentation.Customer.Model
 {
-    public class CustomerUI
+    public class CustomerUI : INotifyPropertyChanged
     {
         public CustomerUI(string name, string email, string address, string phone, int nrOfMembers)
         {
@@ -28,10 +29,18 @@ namespace Hotel.Presentation.Customer.Model
         }
 
         public int? Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
+        private string _name;
+        public string Name { get { return _name; } set { _name = value; OnPropertyChanged(); } }
+        private string _email;
+        public string Email { get { return _email; } set { _email = value; OnPropertyChanged(); } }
         public string Address { get; set; }
-        public string Phone { get; set; }
+        private string _phone;
+        public string Phone { get { return _phone; } set {_phone=value; OnPropertyChanged();} }
         public int NrOfMembers { get; set; }
+        private void OnPropertyChanged(string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

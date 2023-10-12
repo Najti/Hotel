@@ -45,19 +45,22 @@ namespace Hotel.Presentation.Customer
 
         private void MenuItemAddCustomer_Click(object sender, RoutedEventArgs e)
         {
-            CustomerWindow w = new CustomerWindow();
+            CustomerWindow w = new CustomerWindow(null);
             if (w.ShowDialog()==true)
                 customerUIs.Add(w.CustomerUI);
         }
-
         private void MenuItemDeleteCustomer_Click(object sender, RoutedEventArgs e)
         {
 
         }
-
         private void MenuItemUpdateCustomer_Click(object sender, RoutedEventArgs e)
         {
-
+            if (CustomerDataGrid.SelectedItem==null) MessageBox.Show("not selected", "update");
+            else
+            {
+                CustomerWindow w = new CustomerWindow((CustomerUI)CustomerDataGrid.SelectedItem);
+                w.ShowDialog();
+            }
         }
     }
 }

@@ -60,5 +60,44 @@ namespace Hotel.Persistence.Repositories
                 throw new CustomerRepositoryException("getcustomer", ex);
             }
         }
+        public void AddCustomer(Customer customer)
+        {
+            try
+            {
+                string sql = "INSERT INTO Customer(name,email,phone,address,status) output INSERTED.ID VALUES(@name,@email,@phone,@address,@status)";
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    conn.Open();
+                    SqlTransaction sqlTransaction = conn.BeginTransaction();
+                    try
+                    {
+                        cmd.Transaction = sqlTransaction;
+                        cmd.CommandText = sql;
+                        cmd.Parameters.AddWithValue("@name", customer.Name);
+                        cmd.Parameters.AddWithValue("@email", customer.Contact.Email);
+                        cmd.Parameters.AddWithValue("@phone", customer.Contact.Phone);
+                        cmd.Parameters.AddWithValue("@address", customer.Contact.Address.ToAddressLine());
+                        cmd.Parameters.AddWithValue("@status", 1);
+                        int id=(int)cmd.ExecuteScalar();
+                        customer.Id = id;   
+                        foreach (Member member in customer.GetMembers())
+                        {
+                            sql = "INSERT INTO Member(customerId,name,birthday,status) VALUES (@customerid,@name,@birthday,@status)";
+                            cmd.CommandText = sql;
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddWithValue("@customerid", customer.Id);
+                            cmd.Parameters.AddWithValue("@name", member.Name);
+                            cmd.Parameters.AddWithValue("@birthday", member.Birthday.ToDateTime(TimeOnly.MinValue));
+                            cmd.Parameters.AddWithValue("@status", 1);
+                            cmd.ExecuteNonQuery();
+                        }
+                        sqlTransaction.Commit();
+                    }
+                    catch (Exception ex) { sqlTransaction.Rollback(); throw; }
+                }
+            }
+            catch(Exception ex) { throw new CustomerRepositoryException("addcustomer", ex); }
+        }
     }
 }

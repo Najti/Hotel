@@ -21,6 +21,12 @@ namespace Hotel.Domain.Model
             Contact = contact;
         }
 
+        public Customer(string name, ContactInfo contact)
+        {
+            Name = name;
+            Contact = contact;
+        }
+
         public IReadOnlyList<Member> GetMembers() { return _members.AsReadOnly(); }
         public void AddMember(Member member)
         {
