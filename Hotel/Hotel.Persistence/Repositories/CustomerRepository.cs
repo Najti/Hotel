@@ -86,7 +86,7 @@ namespace Hotel.Persistence.Repositories
                             sql = "INSERT INTO Member(customerId,name,birthday,status) VALUES (@customerid,@name,@birthday,@status)";
                             cmd.CommandText = sql;
                             cmd.Parameters.Clear();
-                            cmd.Parameters.AddWithValue("@customerid", customer.Id);
+                            cmd.Parameters.AddWithValue("@customerId", customer.Id);
                             cmd.Parameters.AddWithValue("@name", member.Name);
                             cmd.Parameters.AddWithValue("@birthday", member.Birthday.ToDateTime(TimeOnly.MinValue));
                             cmd.Parameters.AddWithValue("@status", 1);

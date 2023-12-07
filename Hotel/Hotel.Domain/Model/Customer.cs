@@ -12,7 +12,7 @@ namespace Hotel.Domain.Model
         public int Id { get; set; }
         public string Name { get; set; }
         public ContactInfo Contact { get; set; }
-        private List<Member> _members = new List<Member>(); //gn dubbels
+        private List<Member> _members = new List<Member>();
 
         public Customer(int id, string name, ContactInfo contact)
         {
@@ -33,14 +33,14 @@ namespace Hotel.Domain.Model
             if (!_members.Contains(member))
                 _members.Add(member);
             else
-                throw new CustomerException("AddMember");
+                throw new CustomerException("Error while adding member - Member already exists");
         }
         public void RemoveMember(Member member) 
         {
             if (_members.Contains(member))
                 _members.Remove(member);
             else
-                throw new CustomerException("RemoveMember");
+                throw new CustomerException("Error while removing member - Member doesn't exist");
         }
     }
 }
