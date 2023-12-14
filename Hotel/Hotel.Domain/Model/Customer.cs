@@ -9,8 +9,9 @@ namespace Hotel.Domain.Model
 {
     public class Customer
     {
+        private string _name;
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get { return _name; } set { if (value.Length > 500 || string.IsNullOrWhiteSpace(value)) throw new CustomerException("Customer name is invalid");_name = value; } }
         public ContactInfo Contact { get; set; }
         private List<Member> _members = new List<Member>();
 

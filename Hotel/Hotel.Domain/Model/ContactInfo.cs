@@ -26,7 +26,7 @@ namespace Hotel.Domain.Model
             get
             { return _email; }
             set
-            { if (string.IsNullOrWhiteSpace(value)) throw new CustomerException("Email cannot be empty or spaces."); _email = value; }
+            { if (string.IsNullOrWhiteSpace(value)) throw new CustomerException("Email cannot be empty or spaces.");if (!value.Contains("@")) throw new CustomerException("Email is invalid"); _email = value; }
         }
 
         public string Phone
