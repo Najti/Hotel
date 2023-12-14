@@ -10,6 +10,7 @@ namespace Hotel.Domain.Model
 {
     public class ContactInfo
     {
+        private int _id;
         private string _email;
         private string _phone;
         private Address _address;
@@ -20,7 +21,17 @@ namespace Hotel.Domain.Model
             _phone = phone;
             _address = address;
         }
-
+        public ContactInfo(int id, string email, string phone, Address address)
+        {
+            _id = id;
+            _email = email;
+            _phone = phone;
+            _address = address;
+        }
+        public int Id
+        {
+            get { return _id; } set {_id=value; }
+        }
         public string Email
         {
             get

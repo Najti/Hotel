@@ -15,22 +15,22 @@ namespace Hotel.Domain.Managers
         {
             this.memberRepository = memberRepository;
         }
-        public void AddMember(Member member, int customerid)
+        public void AddMember(Member member)
         {
-            memberRepository.AddMember(member, customerid);
+            memberRepository.AddMember(member);
         }
-        public void UpdateMember(Member member, int customerid, string name)
+        public void UpdateMember(Member member)
         {
-            memberRepository.UpdateMember(member, customerid, name);
+            memberRepository.UpdateMember(member);
         }
-        public void DeleteMember(Member member, int customerid)
+        public void DeleteMember(Member member)
         {
-            memberRepository.DeleteMember(member, customerid);
+            memberRepository.DeleteMember(member);
         }
 
-        public List<Member> GetMembers(int customerid)
+        public List<Member> GetMembers(string filter)
         {
-            return memberRepository.GetMembers(customerid);
+            return memberRepository.GetMembers(filter);
         }
     }
 }

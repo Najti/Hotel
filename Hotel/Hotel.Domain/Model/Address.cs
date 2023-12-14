@@ -21,10 +21,32 @@ namespace Hotel.Domain.Model
         public Address(string addressLine)
         {
             string[] parts = addressLine.Split(splitChar);
-            City = parts[0];
-            Street = parts[2];
-            PostalCode = parts[1];
-            HouseNumber = parts[3];
+
+            if (parts.Length >= 1)
+            {
+                City = parts[0];
+            }
+
+            if (parts.Length >= 2)
+            {
+                PostalCode = parts[1];
+            }
+
+            if (parts.Length >= 3)
+            {
+                Street = parts[2];
+            }
+
+            if (parts.Length >= 4)
+            {
+                HouseNumber = parts[3];
+            }
+        }
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
         }
 
         private string _city;

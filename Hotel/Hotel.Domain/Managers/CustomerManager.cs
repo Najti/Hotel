@@ -18,7 +18,7 @@ namespace Hotel.Domain.Managers
             _customerRepository = customerRepository;
         }
 
-        public IReadOnlyList<Customer> GetCustomers(string filter)
+        public List<Customer> GetCustomers(string filter)
         {
             try
             {
@@ -27,6 +27,52 @@ namespace Hotel.Domain.Managers
             catch(Exception ex)
             {
                 throw new CustomerManagerException("GetCustomers");
+            }
+        }
+
+        public void AddCustomer(Customer customer)
+        {
+            try
+            {
+                _customerRepository.AddCustomer(customer);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomerManagerException("Error while adding customer", ex);
+            }
+        }
+
+        public Customer GetCustomerByID(int id)
+        {
+            try
+            {
+                return _customerRepository.GetCustomerByID(id);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomerManagerException("GetCustomerByID");
+            }
+        }
+        public Customer UpdateCustomer(Customer customer)
+        {
+            try
+            {
+                return _customerRepository.UpdateCustomer(customer);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomerManagerException("Update Customer");
+            }
+        }
+        public void DeleteCustomer(Customer customer)
+        {
+            try
+            {
+                 _customerRepository.DeleteCustomer(customer);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomerManagerException("DeleteCustomers");
             }
         }
     }

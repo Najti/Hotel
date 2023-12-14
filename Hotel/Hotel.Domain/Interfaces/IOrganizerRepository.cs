@@ -9,7 +9,10 @@ namespace Hotel.Domain.Interfaces
 {
     public interface IOrganizerRepository
     {
-        List<Organizer> GetOrganizers();
-
+        List<Organizer> GetOrganizers(string filter);
+        Organizer GetOrganizer(int id);
+        void DeleteOrganizer(Organizer organizer);
+        Organizer AddOrganizer(Organizer organizer);
+        void UpdateOrganizer(Organizer organizer);
     }
 }

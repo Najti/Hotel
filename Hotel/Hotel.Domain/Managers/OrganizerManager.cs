@@ -17,9 +17,25 @@ namespace Hotel.Domain.Managers
             _organizerRepository = organizerRepository;
         }
 
-        public List<Organizer> GetOrganizers()
+        public List<Organizer> GetOrganizers(string filter)
         {
-            return _organizerRepository.GetOrganizers();
+            return _organizerRepository.GetOrganizers(filter);
+        } 
+        public Organizer GetOrganizer(int id)
+        {
+            return _organizerRepository.GetOrganizer(id);
+        }
+        public void DeleteOrganizer(Organizer organizer)
+        {
+            _organizerRepository.DeleteOrganizer(organizer);
+        }
+        public Organizer AddOrganizer(Organizer organizer)
+        {
+            return _organizerRepository.AddOrganizer(organizer);
+        }
+        public void UpdateOrganizer(Organizer organizer)
+        {
+            _organizerRepository.UpdateOrganizer(organizer);
         }
     }
 }
