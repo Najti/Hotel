@@ -10,5 +10,6 @@ namespace Hotel.Domain.Interfaces
     public interface IRegistrationRepository
     {
         void AddRegistration(Registration registration);
+        //public List<Activity> GetActivitiesByCustomer(string filter, Customer customer);
     }
 }

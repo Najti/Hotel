@@ -1,6 +1,5 @@
 ﻿using Hotel.Domain.Managers;
 using Hotel.Domain.Model;
-using Hotel.Presentation.Customer.Model;
 using Hotel.Util;
 using System;
 using System.Collections.Generic;
@@ -23,19 +22,19 @@ namespace Hotel.Presentation.Customer
     /// </summary>
     public partial class CustomerWindow : Window
     {
-        public CustomerUI CustomerUI { get; set; }
+        public Hotel.Domain.Model.Customer Customer { get; set; }
         private CustomerManager customerManager;
-        public CustomerWindow(CustomerUI customerUI)
+        public CustomerWindow(Hotel.Domain.Model.Customer customer)
         {
             InitializeComponent();
             customerManager = new CustomerManager(RepositoryFactory.CustomerRepository);
-            this.CustomerUI = customerUI;
-            if (CustomerUI != null)
+            this.Customer = customer;
+            if (Customer != null)
             {
-                IdTextBox.Text = CustomerUI.Id.ToString();
-                NameTextBox.Text = CustomerUI.Name;
-                EmailTextBox.Text = CustomerUI.Email;
-                PhoneTextBox.Text = CustomerUI.Phone;
+                IdTextBox.Text = Customer.Id.ToString();
+                NameTextBox.Text = Customer.Name;
+                EmailTextBox.Text = Customer.Contact.Email;
+                PhoneTextBox.Text = Customer.Contact.Phone;
             }
         }
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -44,7 +43,7 @@ namespace Hotel.Presentation.Customer
         }
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CustomerUI == null)
+            if (Customer == null)
             {
 
 
@@ -64,16 +63,16 @@ namespace Hotel.Presentation.Customer
                 ContactInfo contactinfo = new ContactInfo(EmailTextBox.Text, PhoneTextBox.Text, address);
                 Hotel.Domain.Model.Customer customer = new Hotel.Domain.Model.Customer(NameTextBox.Text, contactinfo);
                 customerManager.AddCustomer(customer);
-                CustomerUI = new CustomerUI(NameTextBox.Text, EmailTextBox.Text, address.ToString(), PhoneTextBox.Text, 0);
+                Customer = customer;
             }
             else
             {
                 //Update
                 //update DB
                 
-                CustomerUI.Email=EmailTextBox.Text;
-                CustomerUI.Phone=PhoneTextBox.Text;
-                CustomerUI.Name=NameTextBox.Text;
+                Customer.Contact.Email=EmailTextBox.Text;
+                Customer.Contact.Phone=PhoneTextBox.Text;
+                Customer.Name=NameTextBox.Text;
             }
             DialogResult = true;
             Close();

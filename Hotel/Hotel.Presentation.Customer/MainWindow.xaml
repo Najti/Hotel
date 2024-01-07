@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel.Presentation.Customer"
         mc:Ignorable="d"
-        Title="Customer Manager" Height="450" Width="800">
+        Title="Customer Manager" Height="750" Width="1000">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -17,12 +18,22 @@
         </Grid.RowDefinitions>
         <TextBox Grid.Row="0" Grid.Column="0" Name="SearchTextBox" Margin="5"/>
         <Button Grid.Row="0" Grid.Column="1" Name="SearchButton" Margin="5" Content="Search" Click="SearchButton_Click"/>
-        <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Name="CustomerDataGrid" IsReadOnly="true">
+        <Button Grid.Row="0" Grid.Column="2" Name="ActivityButton" Margin="5" Content="See Activity Overview" Click="ActivityButton_Click"/>
+        <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" Name="CustomerDataGrid" IsReadOnly="true" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Email" Binding="{Binding Contact.Email}" />
+                <DataGridTextColumn Header="Address" Binding="{Binding Contact.Address}" />
+                <DataGridTextColumn Header="Phone" Binding="{Binding Contact.Phone}" />
+                <DataGridTextColumn Header="NrOfMembers" Binding="{Binding NrOfMembers}" />
+            </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Add" Click="MenuItemAddCustomer_Click"></MenuItem>
                     <MenuItem Header="Delete" Click="MenuItemDeleteCustomer_Click"></MenuItem>
                     <MenuItem Header="Update" Click="MenuItemUpdateCustomer_Click"></MenuItem>
+                    <MenuItem Header="See Members" Click="MenuItemGetMembers_Click"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

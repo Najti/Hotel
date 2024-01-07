@@ -14,6 +14,7 @@ namespace Hotel.Domain.Model
         public string Name { get { return _name; } set { if (value.Length > 500 || string.IsNullOrWhiteSpace(value)) throw new CustomerException("Customer name is invalid");_name = value; } }
         public ContactInfo Contact { get; set; }
         private List<Member> _members = new List<Member>();
+        public int NrOfMembers => _members.Count;
 
         public Customer(int id, string name, ContactInfo contact)
         {
@@ -26,6 +27,10 @@ namespace Hotel.Domain.Model
         {
             Name = name;
             Contact = contact;
+        }
+
+        public Customer()
+        {
         }
 
         public IReadOnlyList<Member> GetMembers() { return _members.AsReadOnly(); }

@@ -11,5 +11,6 @@ namespace Hotel.Domain.Interfaces
     {
         List<Activity> GetActivities(string filter);
         void AddActivity(Activity activity);
+        
     }
 }

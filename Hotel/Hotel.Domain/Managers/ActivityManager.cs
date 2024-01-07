@@ -27,5 +27,6 @@ namespace Hotel.Domain.Managers
         {
             return _activityRepository.GetActivities(filter);
         }
+        
     }
 }

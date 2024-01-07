@@ -39,7 +39,7 @@ namespace Hotel.Persistence.Repositories
                         Activity activity;
                         if (reader["Discount"] == DBNull.Value)
                         {
-                            activity = new Activity((int)reader["Id"], (string)reader["Name"], (string)reader["Description"], (DateTime)reader["Startdate"], (int)reader["Duration"], (int)reader["AvailablePlaces"], (decimal)reader["CostAdult"], (decimal)reader["CostChild"],0, (string)reader["Location"]);
+                            activity = new Activity((int)reader["Id"], (string)reader["Name"], (string)reader["Description"], (DateTime)reader["Startdate"], (int)reader["Duration"], (int)reader["AvailablePlaces"], (decimal)reader["CostAdult"], (decimal)reader["CostChild"], 0, (string)reader["Location"]);
 
                         }
                         else
@@ -59,6 +59,5 @@ namespace Hotel.Persistence.Repositories
             return activities;
         }
     }
-
 }
 

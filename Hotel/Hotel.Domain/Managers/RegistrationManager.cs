@@ -19,5 +19,9 @@ namespace Hotel.Domain.Managers
         {
             registrationRepository.AddRegistration(registration);
         }
+        //public List<Activity> GetActivitiesByCustomer(string filter, Customer customer)
+        //{
+        //    return registrationRepository.GetActivities(filter);
+        //}
     }
 }
