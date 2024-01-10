@@ -17,6 +17,7 @@ namespace Hotel.Domain.Managers
         {
             _customerRepository = customerRepository;
         }
+        public Customer GetCustomerByName(string name) {return  _customerRepository.GetCustomerByName(name); }
 
         public List<Customer> GetCustomers(string filter)
         {

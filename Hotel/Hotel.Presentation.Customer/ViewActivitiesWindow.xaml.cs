@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.Managers;
+using Hotel.Domain.Model;
 using Hotel.Util;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,10 @@ namespace Hotel.Presentation.Customer
     public partial class ViewActivitiesWindow : Window
     {
         private ActivityManager activityManager;
+        private RegistrationManager registrationManager;
         private Domain.Model.Customer selectedCustomer;
+        public event EventHandler<Activity> ActivitySelected;
+
 
         public ViewActivitiesWindow()
         {
@@ -34,25 +38,65 @@ namespace Hotel.Presentation.Customer
         public ViewActivitiesWindow(Domain.Model.Customer selectedCustomer)
         {
             this.selectedCustomer = selectedCustomer;
+            InitializeComponent();
+            activityManager = new ActivityManager(RepositoryFactory.ActivityRepository);
+            registrationManager = new RegistrationManager(RepositoryFactory.RegistrationRepository);
+            ; RefreshActivitiesForUser();
         }
 
         private void SearchButton_Click(object sender, object e)
         {
-            //show activities that match the search
-            ActivitiesDataGrid.ItemsSource = activityManager.GetActivities(SearchTextBox.Text);
+            try
+            {
+                ActivitiesDataGrid.ItemsSource = activityManager.GetActivities(SearchTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }          
         }
 
         private void RefreshActivities()
         {
-            //show all activities
-            ActivitiesDataGrid.ItemsSource = activityManager.GetActivities(null);
-            //if (selectedCustomer != null) { } else { ActivitiesDataGrid.ItemsSource = activityManager.GetActivities(null); }
-            
+            try
+            {
+                //show all activities
+                ActivitiesDataGrid.ItemsSource = activityManager.GetActivities(null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
+        private void RefreshActivitiesForUser()
+        {
+            try
+            {
+                //show all activities
+                // ActivitiesDataGrid.ItemsSource = registrationManager.GetRegistrationsByCustomer(selectedCustomer);
+
+                //if (selectedCustomer != null) { } else { ActivitiesDataGrid.ItemsSource = activityManager.GetActivities(null); }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         private void ShowAllButton_Click(object sender, RoutedEventArgs e)
         {
             RefreshActivities();
+        }
+
+        private void ActivitiesDataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            if (ActivitiesDataGrid.SelectedItem is Activity selectedActivity)
+            {
+                ActivitySelected?.Invoke(this, selectedActivity);
+                Close();
+            }
         }
     }
 }

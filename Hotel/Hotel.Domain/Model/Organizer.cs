@@ -15,6 +15,11 @@ namespace Hotel.Domain.Model
             _contactInfo = contactInfo;
             _id = id;
         }
+        public Organizer(string name, ContactInfo contactInfo)
+        {
+            _name = name;
+            _contactInfo = contactInfo;
+        }
         private string _name;
         public string Name
         {
@@ -32,7 +37,7 @@ namespace Hotel.Domain.Model
             { if (value <= 0) throw new OrganizerException("Organizer ID cannot be less than 1."); _id = value; }
         }
         private ContactInfo _contactInfo;
-        public ContactInfo ContactInfo
+        public ContactInfo Contact
         {
             get
             { return _contactInfo; }

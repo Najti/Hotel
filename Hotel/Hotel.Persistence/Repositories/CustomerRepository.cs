@@ -18,14 +18,17 @@ namespace Hotel.Persistence.Repositories
         {
             this.connectionString = connectionString;
         }
-
+        public Customer GetCustomerByName(string name)
+        {
+            return GetCustomers(name)[0];
+        }
         public List<Customer> GetCustomers(string filter)
         {
             try
             {
                 Dictionary<int, Customer> customers = new Dictionary<int, Customer>();
                 string sql = "SELECT t1.id, t1.name customername, t2.email, t2.phone, " +
-                             "CONCAT(t3.Street, '|', t3.City, '|', t3.PostalCode, '|', t3.HouseNumber) as Address, " +
+                             "CONCAT(t3.City, '|', t3.PostalCode, '|', t3.Street,  '|', t3.HouseNumber) as Address, " +
                              "t4.name membername, t4.birthday " +
                              "FROM Customer t1 " +
                              "LEFT JOIN ContactInfo t2 ON t1.ContactInfoID = t2.Id " +
@@ -79,34 +82,6 @@ namespace Hotel.Persistence.Repositories
                     conn.Open();
                     using (SqlTransaction transaction = conn.BeginTransaction())
                     {
-                        // Controleer of de ContactInfo al bestaat op basis van email en telefoon
-                        string contactInfoQuery = "SELECT Id FROM ContactInfo WHERE Email = @email AND Phone = @phone;";
-                        int contactInfoId = -1;
-                        using (SqlCommand checkContactInfoCmd = new SqlCommand(contactInfoQuery, conn, transaction))
-                        {
-                            checkContactInfoCmd.Parameters.AddWithValue("@email", customer.Contact.Email);
-                            checkContactInfoCmd.Parameters.AddWithValue("@phone", customer.Contact.Phone);
-                            object existingContactInfoId = checkContactInfoCmd.ExecuteScalar();
-                            if (existingContactInfoId != null)
-                            {
-                                contactInfoId = Convert.ToInt32(existingContactInfoId);
-                            }
-                            else
-                            {
-                                // Voeg een nieuwe ContactInfo toe
-                                //ERROR HIER ERGENS
-                                string addContactInfoSql = "INSERT INTO ContactInfo(Email, Phone, AddressId) VALUES (@email, @phone, @addressId); SELECT SCOPE_IDENTITY();";
-                                using (SqlCommand addContactInfoCmd = new SqlCommand(addContactInfoSql, conn, transaction))
-                                {
-                                    addContactInfoCmd.Parameters.AddWithValue("@email", customer.Contact.Email);
-                                    addContactInfoCmd.Parameters.AddWithValue("@phone", customer.Contact.Phone);
-                                    addContactInfoCmd.Parameters.AddWithValue("@addressId", customer.Contact.Address.Id);
-
-                                    contactInfoId = Convert.ToInt32(addContactInfoCmd.ExecuteScalar());
-                                }
-                            }
-                        }
-
                         // Controleer of het adres al bestaat op basis van adresdetails
                         string addressQuery = "SELECT Id FROM Address WHERE Street = @street AND City = @city AND PostalCode = @postalCode AND HouseNumber = @houseNumber;";
                         int addressId = -1;
@@ -136,6 +111,33 @@ namespace Hotel.Persistence.Repositories
                                 }
                             }
                         }
+
+                        string contactInfoQuery = "SELECT Id FROM ContactInfo WHERE Email = @email AND Phone = @phone;";
+                        int contactInfoId = -1;
+                        using (SqlCommand checkContactInfoCmd = new SqlCommand(contactInfoQuery, conn, transaction))
+                        {
+                            checkContactInfoCmd.Parameters.AddWithValue("@email", customer.Contact.Email);
+                            checkContactInfoCmd.Parameters.AddWithValue("@phone", customer.Contact.Phone);
+                            object existingContactInfoId = checkContactInfoCmd.ExecuteScalar();
+                            if (existingContactInfoId != null)
+                            {
+                                contactInfoId = Convert.ToInt32(existingContactInfoId);
+                            }
+                            else
+                            {
+                                string addContactInfoSql = "INSERT INTO ContactInfo(Email, Phone, AddressId) VALUES (@email, @phone, @addressId); SELECT SCOPE_IDENTITY();";
+                                using (SqlCommand addContactInfoCmd = new SqlCommand(addContactInfoSql, conn, transaction))
+                                {
+                                    addContactInfoCmd.Parameters.AddWithValue("@email", customer.Contact.Email);
+                                    addContactInfoCmd.Parameters.AddWithValue("@phone", customer.Contact.Phone);
+                                    addContactInfoCmd.Parameters.AddWithValue("@addressId", addressId);
+
+                                    contactInfoId = Convert.ToInt32(addContactInfoCmd.ExecuteScalar());
+                                }
+                            }
+                        }
+
+
 
                         // Voeg de klant toe met de contactinformatie en adres-ID's
                         string customerSql = "INSERT INTO Customer(Name, ContactInfoID) VALUES (@name, @contactInfoId); SELECT SCOPE_IDENTITY();";

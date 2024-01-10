@@ -8,18 +8,26 @@
         Title="Customer Manager" Height="750" Width="1000">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            
         </Grid.RowDefinitions>
         <TextBox Grid.Row="0" Grid.Column="0" Name="SearchTextBox" Margin="5"/>
-        <Button Grid.Row="0" Grid.Column="1" Name="SearchButton" Margin="5" Content="Search" Click="SearchButton_Click"/>
+        <Button Grid.Row="1" Grid.Column="0" Name="SearchButton" Margin="5" Content="Search" Click="SearchButton_Click"/>
+        <Button Grid.Row="0" Grid.Column="1" Name="OrganizerButton" Margin="5" Content="See Organizers" Click="OrganizerButton_Click"/>
         <Button Grid.Row="0" Grid.Column="2" Name="ActivityButton" Margin="5" Content="See Activity Overview" Click="ActivityButton_Click"/>
-        <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" Name="CustomerDataGrid" IsReadOnly="true" AutoGenerateColumns="False">
+        <Button Grid.Row="0" Grid.Column="3" Name="ReservationButton" Margin="5" Content="See Reservation Overview" Click="ReservationButton_Click"/>
+        <Button Grid.Row="1" Grid.Column="1" Name="DeselectButton" Margin="5" Content="Deselect" Click="DeselectButton_Click"/>
+        <Button Grid.Row="1" Grid.Column="2" Name="NewActivityButton" Margin="5" Content="Make New Activity" Click="NewActivityButton_Click" IsEnabled="False"/>
+        <Button Grid.Row="1" Grid.Column="3" Name="NewReservationButton" Margin="5" Content="Make New Reservation" Click="NewReservationButton_Click"/>
+        <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Name="CustomerDataGrid" IsReadOnly="true" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
@@ -33,7 +41,7 @@
                     <MenuItem Header="Add" Click="MenuItemAddCustomer_Click"></MenuItem>
                     <MenuItem Header="Delete" Click="MenuItemDeleteCustomer_Click"></MenuItem>
                     <MenuItem Header="Update" Click="MenuItemUpdateCustomer_Click"></MenuItem>
-                    <MenuItem Header="See Members" Click="MenuItemGetMembers_Click"></MenuItem>
+                    <!--<MenuItem Header="See Members" Click="MenuItemGetMembers_Click"></MenuItem>-->
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

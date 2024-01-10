@@ -22,6 +22,19 @@ namespace Hotel.Domain.Model
             _discount = discount;
             _location = location;
         }
+        public Activity(Organizer organizer, string name, string description, DateTime date, int duration, int availablePlaces, decimal priceAdult, decimal priceChild, decimal discount, string location)
+        {
+            this.organizer = organizer;
+            _name = name;
+            _description = description;
+            _date = date;
+            _duration = duration;
+            _availablePlaces = availablePlaces;
+            _priceAdult = priceAdult;
+            _priceChild = priceChild;
+            _discount = discount;
+            _location = location;
+        }
 
         public int Id
         {
@@ -50,7 +63,7 @@ namespace Hotel.Domain.Model
             }
         }
         private string _name;
-
+        public Organizer organizer;
         public string Description
         {
             get { return _description; }

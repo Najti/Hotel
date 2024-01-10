@@ -20,18 +20,80 @@ namespace Hotel.Persistence.Repositories
         {
             try
             {
-                string sql = "INSERT INTO Organizer(name, ContactInfoId, DeletedAt) VALUES (@name, @contactInfoId, @deletedAt)";
-
                 using (SqlConnection conn = new SqlConnection(connectionString))
-                using (SqlCommand cmd = conn.CreateCommand())
                 {
                     conn.Open();
-                    cmd.CommandText = sql;
-                    cmd.Parameters.AddWithValue("@name", organizer.Name);
-                    cmd.Parameters.AddWithValue("@contactInfoId", organizer.ContactInfo.Id);
-                    cmd.Parameters.AddWithValue("@deletedAt", DBNull.Value);
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        // Controleer of het adres al bestaat op basis van adresdetails
+                        string addressQuery = "SELECT Id FROM Address WHERE Street = @street AND City = @city AND PostalCode = @postalCode AND HouseNumber = @houseNumber;";
+                        int addressId = -1;
+                        using (SqlCommand checkAddressCmd = new SqlCommand(addressQuery, conn, transaction))
+                        {
+                            checkAddressCmd.Parameters.AddWithValue("@street", organizer.Contact.Address.Street);
+                            checkAddressCmd.Parameters.AddWithValue("@city", organizer.Contact.Address.City);
+                            checkAddressCmd.Parameters.AddWithValue("@postalCode", organizer.Contact.Address.PostalCode);
+                            checkAddressCmd.Parameters.AddWithValue("@houseNumber", organizer.Contact.Address.HouseNumber);
+                            object existingAddressId = checkAddressCmd.ExecuteScalar();
+                            if (existingAddressId != null)
+                            {
+                                addressId = Convert.ToInt32(existingAddressId);
+                            }
+                            else
+                            {
+                                // Voeg een nieuw adres toe
+                                string addAddressSql = "INSERT INTO Address(Street, City, PostalCode, HouseNumber) VALUES (@street, @city, @postalCode, @houseNumber); SELECT SCOPE_IDENTITY();";
+                                using (SqlCommand addAddressCmd = new SqlCommand(addAddressSql, conn, transaction))
+                                {
+                                    addAddressCmd.Parameters.AddWithValue("@street", organizer.Contact.Address.Street);
+                                    addAddressCmd.Parameters.AddWithValue("@city", organizer.Contact.Address.City);
+                                    addAddressCmd.Parameters.AddWithValue("@postalCode", organizer.Contact.Address.PostalCode);
+                                    addAddressCmd.Parameters.AddWithValue("@houseNumber", organizer.Contact.Address.HouseNumber);
 
-                    cmd.ExecuteNonQuery();
+                                    addressId = Convert.ToInt32(addAddressCmd.ExecuteScalar());
+                                }
+                            }
+                        }
+                        string contactInfoQuery = "SELECT Id FROM ContactInfo WHERE Email = @email AND Phone = @phone;";
+                        int contactInfoId = -1;
+                        using (SqlCommand checkContactInfoCmd = new SqlCommand(contactInfoQuery, conn, transaction))
+                        {
+                            checkContactInfoCmd.Parameters.AddWithValue("@email", organizer.Contact.Email);
+                            checkContactInfoCmd.Parameters.AddWithValue("@phone", organizer.Contact.Phone);
+                            object existingContactInfoId = checkContactInfoCmd.ExecuteScalar();
+                            if (existingContactInfoId != null)
+                            {
+                                contactInfoId = Convert.ToInt32(existingContactInfoId);
+                            }
+                            else
+                            {  
+                                string addContactInfoSql = "INSERT INTO ContactInfo(Email, Phone, AddressId) VALUES (@email, @phone, @addressId); SELECT SCOPE_IDENTITY();";
+                                using (SqlCommand addContactInfoCmd = new SqlCommand(addContactInfoSql, conn, transaction))
+                                {
+                                    addContactInfoCmd.Parameters.AddWithValue("@email", organizer.Contact.Email);
+                                    addContactInfoCmd.Parameters.AddWithValue("@phone", organizer.Contact.Phone);
+                                    addContactInfoCmd.Parameters.AddWithValue("@addressId", addressId);
+
+                                    contactInfoId = Convert.ToInt32(addContactInfoCmd.ExecuteScalar());
+                                }
+                            }
+                        }
+
+                        // Voeg de organizer toe met de contactinformatie en adres-ID's
+                        string organizerSql = "INSERT INTO Organizer(Name, ContactInfoId, DeletedAt) VALUES (@name, @contactInfoId, @deletedAt); SELECT SCOPE_IDENTITY();";
+                        using (SqlCommand organizerCmd = new SqlCommand(organizerSql, conn, transaction))
+                        {
+                            organizerCmd.Parameters.AddWithValue("@name", organizer.Name);
+                            organizerCmd.Parameters.AddWithValue("@contactInfoId", contactInfoId); // Gebruik het addressId voor de ContactInfoId
+                            organizerCmd.Parameters.AddWithValue("@deletedAt", DBNull.Value);
+
+                            int organizerId = Convert.ToInt32(organizerCmd.ExecuteScalar());
+                            organizer.Id = organizerId;
+                        }
+
+                        // Commit de transactie als alles goed is gegaan
+                        transaction.Commit();
+                    }
                 }
 
                 return organizer;
@@ -41,6 +103,7 @@ namespace Hotel.Persistence.Repositories
                 throw new OrganizerException("Error while adding organizer", ex);
             }
         }
+
 
         public void DeleteOrganizer(Organizer organizer)
         {
@@ -68,7 +131,7 @@ namespace Hotel.Persistence.Repositories
         {
             try
             {
-                string sql = "SELECT O.id AS OrganizerId, O.name AS OrganizerName, CI.id AS ContactInfoId, A.Street, A.City, A.PostalCode, A.HouseNumber " +
+                string sql = "SELECT O.id AS OrganizerId, O.name AS OrganizerName, CI.id AS ContactInfoId, CI.Email, CI.Phone, A.Street, A.City, A.PostalCode, A.HouseNumber " +
                              "FROM Organizer O " +
                              "INNER JOIN ContactInfo CI ON O.ContactInfoId = CI.Id " +
                              "INNER JOIN Address A ON CI.AddressId = A.Id " +

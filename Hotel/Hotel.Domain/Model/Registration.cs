@@ -18,7 +18,6 @@ namespace Hotel.Domain.Model
             AdultOrChild(customer);
             CalculatePrice();
         }
-
         public int Id
         {
             get
@@ -84,7 +83,7 @@ namespace Hotel.Domain.Model
         }
         private int _numberOfChildren;
 
-        private void CalculatePrice()
+        public void CalculatePrice()
         {
             
             if (_activity.Discount != 0)

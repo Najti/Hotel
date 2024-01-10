@@ -17,7 +17,7 @@
             </StackPanel>
 
             <!-- Activities DataGrid -->
-            <ListView x:Name="ActivitiesDataGrid" ItemsSource="{Binding FilteredActivities}" BorderBrush="#FFABABAB" BorderThickness="1">
+            <ListView x:Name="ActivitiesDataGrid" ItemsSource="{Binding FilteredActivities}" BorderBrush="#FFABABAB" BorderThickness="1" SelectionChanged="ActivitiesDataGrid_SelectionChanged_1">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="150"/>

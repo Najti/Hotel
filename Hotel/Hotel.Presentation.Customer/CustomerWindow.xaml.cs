@@ -22,60 +22,122 @@ namespace Hotel.Presentation.Customer
     /// </summary>
     public partial class CustomerWindow : Window
     {
-        public Hotel.Domain.Model.Customer Customer { get; set; }
+        public Hotel.Domain.Model.Customer Customer;
+        public Organizer organizer;
         private CustomerManager customerManager;
+        private OrganizerManager om;
         public CustomerWindow(Hotel.Domain.Model.Customer customer)
         {
-            InitializeComponent();
-            customerManager = new CustomerManager(RepositoryFactory.CustomerRepository);
-            this.Customer = customer;
-            if (Customer != null)
+            try
             {
-                IdTextBox.Text = Customer.Id.ToString();
-                NameTextBox.Text = Customer.Name;
-                EmailTextBox.Text = Customer.Contact.Email;
-                PhoneTextBox.Text = Customer.Contact.Phone;
+                InitializeComponent();
+                customerManager = new CustomerManager(RepositoryFactory.CustomerRepository);
+                this.Customer = customer;
+                if (Customer != null)
+                {
+                    IdTextBox.Text = Customer.Id.ToString();
+                    NameTextBox.Text = Customer.Name;
+                    EmailTextBox.Text = Customer.Contact.Email;
+                    PhoneTextBox.Text = Customer.Contact.Phone;
+                    CityTextBox.Text = Customer.Contact.Address.City;
+                    ZipTextBox.Text = Customer.Contact.Address.PostalCode;
+                    StreetTextBox.Text = Customer.Contact.Address.Street;
+                    HouseNumberTextBox.Text = Customer.Contact.Address.HouseNumber;
+                    AddButton.Content = "Update Customer";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        public CustomerWindow(Organizer organizer)
+        {
+            try
+            {
+                InitializeComponent();
+                om = new OrganizerManager(RepositoryFactory.OrganizerRepository);
+                this.organizer = organizer;
+                if (organizer != null)
+                {
+                    IdTextBox.Text = organizer.Id.ToString();
+                    NameTextBox.Text = organizer.Name;
+                    EmailTextBox.Text = organizer.Contact.Email;
+                    PhoneTextBox.Text = organizer.Contact.Phone;
+                    CityTextBox.Text = organizer.Contact.Address.City;
+                    ZipTextBox.Text = organizer.Contact.Address.PostalCode;
+                    StreetTextBox.Text = organizer.Contact.Address.Street;
+                    HouseNumberTextBox.Text = organizer.Contact.Address.HouseNumber;
+                    AddButton.Content = "Update organizer";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Customer == null)
+            try
             {
-
-
-        //        < TextBox Grid.Row = "0" Grid.Column = "1" Name = "IdTextBox" Margin = "5" VerticalAlignment = "Center" />
-        //< TextBox Grid.Row = "0" Grid.Column = "3" Name = "CityTextBox" Margin = "5" VerticalAlignment = "Center" />
-        //< TextBox Grid.Row = "1" Grid.Column = "1" Name = "NameTextBox" Margin = "5" VerticalAlignment = "Center" />
-        //< TextBox Grid.Row = "1" Grid.Column = "3" Name = "ZipTextBox" Margin = "5" VerticalAlignment = "Center" />
-        //< TextBox Grid.Row = "2" Grid.Column = "1" Name = "EmailTextBox" Margin = "5" VerticalAlignment = "Center" />
-        //< TextBox Grid.Row = "2" Grid.Column = "3" Name = "StreetTextBox" Margin = "5" VerticalAlignment = "Center" />
-        //< TextBox Grid.Row = "3" Grid.Column = "1" Name = "PhoneTextBox" Margin = "5" VerticalAlignment = "Center" />
-        //< TextBox Grid.Row = "3" Grid.Column = "3" Name = "HouseNumberTextBox" Margin = "5" VerticalAlignment = "Center" />
-
-                //Nieuw
-                //wegschrijven
-                //TODO nrofmembers
-                Address address = new Address(CityTextBox.Text, StreetTextBox.Text, ZipTextBox.Text, HouseNumberTextBox.Text);
-                ContactInfo contactinfo = new ContactInfo(EmailTextBox.Text, PhoneTextBox.Text, address);
-                Hotel.Domain.Model.Customer customer = new Hotel.Domain.Model.Customer(NameTextBox.Text, contactinfo);
-                customerManager.AddCustomer(customer);
-                Customer = customer;
+                if (om == null)
+                {
+                    if (Customer == null)
+                    {
+                        Address address = new Address(CityTextBox.Text, StreetTextBox.Text, ZipTextBox.Text, HouseNumberTextBox.Text);
+                        ContactInfo contactinfo = new ContactInfo(EmailTextBox.Text, PhoneTextBox.Text, address);
+                        Hotel.Domain.Model.Customer customer = new Hotel.Domain.Model.Customer(NameTextBox.Text, contactinfo);
+                        customerManager.AddCustomer(customer);
+                        Customer = customer;
+                    }
+                    else
+                    {
+                        Customer.Contact.Email = EmailTextBox.Text;
+                        Customer.Contact.Phone = PhoneTextBox.Text;
+                        Customer.Name = NameTextBox.Text;
+                        Customer.Contact.Address.City = CityTextBox.Text;
+                        Customer.Contact.Address.PostalCode = ZipTextBox.Text;
+                        Customer.Contact.Address.Street = StreetTextBox.Text;
+                        Customer.Contact.Address.HouseNumber = HouseNumberTextBox.Text;
+                        customerManager.UpdateCustomer(Customer);
+                    }
+                }
+                else
+                {
+                    if (organizer == null)
+                    {
+                        Address address = new Address(CityTextBox.Text, StreetTextBox.Text, ZipTextBox.Text, HouseNumberTextBox.Text);
+                        ContactInfo contactinfo = new ContactInfo(EmailTextBox.Text, PhoneTextBox.Text, address);
+                        Organizer organizerToAdd = new Organizer(NameTextBox.Text, contactinfo);
+                        om.AddOrganizer(organizerToAdd);
+                        organizer = organizerToAdd;
+                    }
+                    else
+                    {
+                        organizer.Contact.Email = EmailTextBox.Text;
+                        organizer.Contact.Phone = PhoneTextBox.Text;
+                        organizer.Name = NameTextBox.Text;
+                        organizer.Contact.Address.City = CityTextBox.Text;
+                        organizer.Contact.Address.PostalCode = ZipTextBox.Text;
+                        organizer.Contact.Address.Street = StreetTextBox.Text;
+                        organizer.Contact.Address.HouseNumber = HouseNumberTextBox.Text;
+                        om.UpdateOrganizer(organizer);
+                    }
+                }
+                DialogResult = true;
+                Close();
             }
-            else
+            catch (Exception ex)
             {
-                //Update
-                //update DB
-                
-                Customer.Contact.Email=EmailTextBox.Text;
-                Customer.Contact.Phone=PhoneTextBox.Text;
-                Customer.Name=NameTextBox.Text;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            DialogResult = true;
-            Close();
         }
+
     }
 }
